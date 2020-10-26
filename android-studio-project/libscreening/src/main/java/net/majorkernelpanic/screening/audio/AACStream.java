@@ -35,7 +35,6 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.MediaRecorder;
 import android.os.Build;
-import android.os.Environment;
 import android.service.textservice.SpellCheckerService.Session;
 import android.util.Log;
 
@@ -296,11 +295,10 @@ public class AACStream extends AudioStream {
       return;
     }
 
-    final String TESTFILE = Environment.getExternalStorageDirectory().getPath()+"/spydroid-test.adts";
+    if (CACHE_DIR == null)
+      throw new IllegalStateException("Application cache directory is not configured. Context is required.");
 
-    if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-      throw new IllegalStateException("No external storage or external storage not ready !");
-    }
+    final String TESTFILE = CACHE_DIR.getPath()+"/spydroid-test.adts";
 
     // The structure of an ADTS packet is described here: http://wiki.multimedia.cx/index.php?title=ADTS
 

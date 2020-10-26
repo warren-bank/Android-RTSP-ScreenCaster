@@ -27,10 +27,18 @@ import net.majorkernelpanic.screening.mp4.MP4Config;
 import net.majorkernelpanic.screening.rtp.H264Packetizer;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences.Editor;
+import android.hardware.display.DisplayManager;
+import android.hardware.display.VirtualDisplay;
+import android.media.MediaRecorder;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Surface;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A class for streaming H.264 from the display screen of an android device using RTP.
@@ -42,6 +50,7 @@ import java.io.IOException;
 public class H264Stream extends VideoStream {
   public final static String TAG = "H264Stream";
 
+  private Semaphore mLock = new Semaphore(0);
   private MP4Config mConfig;
 
   /**
@@ -50,7 +59,8 @@ public class H264Stream extends VideoStream {
    */
   public H264Stream() {
     super();
-    mPacketizer = new H264Packetizer();
+    mVideoEncoder = MediaRecorder.VideoEncoder.H264;
+    mPacketizer   = new H264Packetizer();
   }
 
   /**
@@ -98,7 +108,15 @@ public class H264Stream extends VideoStream {
    * and determines the pps and sps. Should not be called by the UI thread.
    **/
   private MP4Config testH264() throws IllegalStateException, IOException {
-    return testMediaCodecAPI();
+    if (mQuality.screenWidth >= 640) {
+      // MediaCodec API is too slow for high resolutions
+      mMode = MODE_MEDIARECORDER_API;
+    }
+
+    return (mMode == MODE_MEDIARECORDER_API)
+      ? testMediaRecorderAPI()
+      : testMediaCodecAPI()
+    ;
   }
 
   @SuppressLint("NewApi")
@@ -108,7 +126,123 @@ public class H264Stream extends VideoStream {
       return new MP4Config(debugger.getB64SPS(), debugger.getB64PPS());
     } catch (Exception e) {
       Log.e(TAG,"Resolution not supported with the MediaCodec API.");
-      return null;
+
+      // Fallback to the MediaRecorder API
+      mMode = MODE_MEDIARECORDER_API;
+      return testH264();
     }
+  }
+
+  // Should not be called by the UI thread
+  private MP4Config testMediaRecorderAPI() throws RuntimeException, IOException {
+    String key = PREF_PREFIX+"h264-mr-"+mRequestedQuality.framerate+","+mRequestedQuality.screenWidth+","+mRequestedQuality.screenHeight;
+
+    if (mSettings != null && mSettings.contains(key) ) {
+      String[] s = mSettings.getString(key, "").split(",");
+      return new MP4Config(s[0],s[1],s[2]);
+    }
+
+    if (MEDIA_PROJECTION == null)
+      throw new RuntimeException("VideoStream requires a MediaProjection");
+
+    if (CACHE_DIR == null)
+      throw new RuntimeException("Application cache directory is not configured. Context is required.");
+
+    final String TESTFILE = CACHE_DIR.getPath()+"/spydroid-test.mp4";
+
+    Log.i(TAG,"Testing H264 support... Test file saved at: "+TESTFILE);
+
+    try {
+      File file = new File(TESTFILE);
+      file.createNewFile();
+    } catch (IOException e) {
+      throw e;
+    }
+
+    MediaRecorder   mediaRecorder  = null;
+    Surface         videoSurface   = null;
+    VirtualDisplay  virtualDisplay = null;
+
+    try {
+      mediaRecorder = new MediaRecorder();
+      mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+      mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+      mediaRecorder.setVideoEncoder(mVideoEncoder);
+      mediaRecorder.setVideoSize(mRequestedQuality.screenWidth, mRequestedQuality.screenHeight);
+      mediaRecorder.setVideoFrameRate(mRequestedQuality.framerate);
+      mediaRecorder.setVideoEncodingBitRate((int)(mRequestedQuality.bitrate*0.8));
+
+      mediaRecorder.setOutputFile(TESTFILE);
+      mediaRecorder.setMaxDuration(3000);
+
+      // We wait a little and stop recording
+      mediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
+        public void onInfo(MediaRecorder mr, int what, int extra) {
+          Log.d(TAG,"MediaRecorder callback called !");
+          if (what==MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
+            Log.d(TAG,"MediaRecorder: MAX_DURATION_REACHED");
+          } else if (what==MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
+            Log.d(TAG,"MediaRecorder: MAX_FILESIZE_REACHED");
+          } else if (what==MediaRecorder.MEDIA_RECORDER_INFO_UNKNOWN) {
+            Log.d(TAG,"MediaRecorder: INFO_UNKNOWN");
+          } else {
+            Log.d(TAG,"WTF ?");
+          }
+          mLock.release();
+        }
+      });
+
+      // Start recording
+      mediaRecorder.prepare();
+
+      videoSurface = mMediaRecorder.getSurface();
+      mediaRecorder.start();
+
+      int flags      = DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
+      virtualDisplay = MEDIA_PROJECTION.createVirtualDisplay("ScreenCaster", mQuality.screenWidth, mQuality.screenHeight, mQuality.screenDpi, flags, videoSurface, /* callback= */ null, /* handler= */ null);
+
+      if (mLock.tryAcquire(6,TimeUnit.SECONDS)) {
+        Log.d(TAG,"MediaRecorder callback was called :)");
+        Thread.sleep(400);
+      } else {
+        Log.d(TAG,"MediaRecorder callback was not called after 6 seconds... :(");
+      }
+    } catch (IOException e) {
+      throw e;
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        mediaRecorder.stop();
+      } catch (Exception e) {}
+      mediaRecorder.release();
+      mediaRecorder = null;
+
+      virtualDisplay.release();
+      virtualDisplay = null;
+
+      videoSurface.release();
+      videoSurface = null;
+    }
+
+    // Retrieve SPS & PPS & ProfileId with MP4Config
+    MP4Config config = new MP4Config(TESTFILE);
+
+    // Delete dummy video
+    File file = new File(TESTFILE);
+    if (!file.delete()) Log.e(TAG,"Temp file could not be erased");
+
+    Log.i(TAG,"H264 Test succeded...");
+
+    // Save test result
+    if (mSettings != null) {
+      Editor editor = mSettings.edit();
+      editor.putString(key, config.getProfileLevel()+","+config.getB64SPS()+","+config.getB64PPS());
+      editor.commit();
+    }
+
+    return config;
   }
 }

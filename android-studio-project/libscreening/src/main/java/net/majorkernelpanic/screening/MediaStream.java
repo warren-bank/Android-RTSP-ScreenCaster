@@ -34,6 +34,7 @@ import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -112,6 +113,12 @@ public abstract class MediaStream implements Stream {
     } else {
       sPipeApi = PIPE_API_LS;
     }
+  }
+
+  protected static File CACHE_DIR = null;
+
+  public static void init(File dir) {
+    CACHE_DIR = dir;
   }
 
   public MediaStream() {

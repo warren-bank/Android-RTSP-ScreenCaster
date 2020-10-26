@@ -125,6 +125,7 @@ public class UriParser {
    */
   public static Session parse(String uri) throws IllegalStateException, IOException {
     SessionBuilder builder     = SessionBuilder.getInstance().clone();
+    byte           videoApi    = 0;
     byte           audioApi    = 0;
     String         query       = URI.create(uri).getQuery();
     String[]       queryParams = query == null ? new String[0] : query.split("&");
@@ -175,6 +176,17 @@ public class UriParser {
         else if (paramName.equalsIgnoreCase("unicast")) {
           if (paramValue!=null) {
             builder.setDestination(paramValue);
+          }
+        }
+
+        // VIDEOAPI -> can be used to specify what api will be used to encode video (the MediaRecorder API or the MediaCodec API)
+        else if (paramName.equalsIgnoreCase("videoapi")) {
+          if (paramValue!=null) {
+            if (paramValue.equalsIgnoreCase("mr")) {
+              videoApi = MediaStream.MODE_MEDIARECORDER_API;
+            } else if (paramValue.equalsIgnoreCase("mc")) {
+              videoApi = MediaStream.MODE_MEDIACODEC_API;
+            }
           }
         }
 
@@ -236,6 +248,10 @@ public class UriParser {
     }
 
     Session session = builder.build();
+
+    if (videoApi>0 && session.getVideoTrack() != null) {
+      session.getVideoTrack().setStreamingMethod(videoApi);
+    }
 
     if (audioApi>0 && session.getAudioTrack() != null) {
       session.getAudioTrack().setStreamingMethod(audioApi);

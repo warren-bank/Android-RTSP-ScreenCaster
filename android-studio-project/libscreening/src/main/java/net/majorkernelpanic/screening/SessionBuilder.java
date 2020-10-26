@@ -20,6 +20,7 @@
 
 package net.majorkernelpanic.screening;
 
+import net.majorkernelpanic.screening.MediaStream;
 import net.majorkernelpanic.screening.audio.AACStream;
 import net.majorkernelpanic.screening.audio.AMRNBStream;
 import net.majorkernelpanic.screening.audio.AudioQuality;
@@ -157,6 +158,8 @@ public class SessionBuilder {
   public SessionBuilder setContext(Context context) {
     mContext = context;
 
+    initCacheDirectory(mContext);
+
     if (VideoQuality.DEFAULT_VIDEO_QUALITY == null)
       initVideoQuality(mContext);
 
@@ -287,6 +290,10 @@ public class SessionBuilder {
     .setCallback(mCallback);
   }
 
+  public static void initCacheDirectory(Context mContext) {
+    MediaStream.init(mContext.getCacheDir());
+  }
+
   public static void initVideoQuality(Context mContext) {
     DisplayMetrics metrics = new DisplayMetrics();
     WindowManager window = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -318,9 +325,6 @@ public class SessionBuilder {
 
     if (builder.getAudioEncoder() != SessionBuilder.AUDIO_NONE)
       requiredPermissions.add("android.permission.RECORD_AUDIO");
-
-    if (builder.getAudioEncoder() == SessionBuilder.AUDIO_AAC)
-      requiredPermissions.add("android.permission.WRITE_EXTERNAL_STORAGE");
 
     return requiredPermissions.toArray(new String[requiredPermissions.size()]);
   }

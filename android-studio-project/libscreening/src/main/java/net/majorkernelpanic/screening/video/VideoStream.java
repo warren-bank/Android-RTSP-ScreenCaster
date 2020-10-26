@@ -31,10 +31,13 @@ import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
+import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.Surface;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -44,8 +47,7 @@ import java.io.InputStream;
 public abstract class VideoStream extends MediaStream {
   protected final static String TAG = "VideoStream";
 
-  /** Default video stream quality. */
-  private static MediaProjection MEDIA_PROJECTION = null;
+  protected static MediaProjection MEDIA_PROJECTION = null;
 
   public static void init(MediaProjection mp) {
     MEDIA_PROJECTION = mp;
@@ -54,14 +56,15 @@ public abstract class VideoStream extends MediaStream {
   protected VideoQuality      mRequestedQuality = null;
   protected VideoQuality      mQuality          = null;
   protected SharedPreferences mSettings         = null;
+  protected int               mVideoEncoder     = 0;
 
-  private Surface             inputSurface      = null;
-  private VirtualDisplay      virtualDisplay    = null;
+  private Surface             mVideoSurface     = null;
+  private VirtualDisplay      mVirtualDisplay   = null;
 
   public VideoStream() {
     super();
 
-    mRequestedMode    = MODE_MEDIACODEC_API;
+  /** Default video stream quality. */
     mRequestedQuality = VideoQuality.DEFAULT_VIDEO_QUALITY.clone();
   }
 
@@ -110,19 +113,86 @@ public abstract class VideoStream extends MediaStream {
 
   /** Stops the stream. */
   public synchronized void stop() {
-    if (virtualDisplay != null) {
-      virtualDisplay.release();
-      virtualDisplay = null;
+    if (mVirtualDisplay != null) {
+      mVirtualDisplay.release();
+      mVirtualDisplay = null;
     }
-    if (inputSurface != null) {
-      inputSurface.release();
-      inputSurface = null;
+    if (mVideoSurface != null) {
+      mVideoSurface.release();
+      mVideoSurface = null;
     }
     super.stop();
   }
 
+  /**
+   * Video encoding is done by a MediaRecorder.
+   */
   protected void encodeWithMediaRecorder() throws RuntimeException, IOException {
-    encodeWithMediaCodec();
+    Log.d(TAG,"Video encoded using the MediaRecorder API");
+
+    if (MEDIA_PROJECTION == null)
+      throw new RuntimeException("VideoStream requires a MediaProjection");
+
+    // We need a local socket to forward data output by the camera to the packetizer
+    createSockets();
+
+    try {
+      mMediaRecorder = new MediaRecorder();
+      mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+      mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+      mMediaRecorder.setVideoEncoder(mVideoEncoder);
+      mMediaRecorder.setVideoSize(mRequestedQuality.screenWidth, mRequestedQuality.screenHeight);
+      mMediaRecorder.setVideoFrameRate(mRequestedQuality.framerate);
+      mMediaRecorder.setVideoEncodingBitRate((int)(mRequestedQuality.bitrate*0.8));
+
+      // We write the output of the camera in a local socket instead of a file !
+      // This one little trick makes streaming feasible quiet simply: data from the camera
+      // can then be manipulated at the other end of the socket
+      FileDescriptor fd = null;
+      if (sPipeApi == PIPE_API_PFD) {
+        fd = mParcelWrite.getFileDescriptor();
+      } else  {
+        fd = mSender.getFileDescriptor();
+      }
+      mMediaRecorder.setOutputFile(fd);
+
+      mMediaRecorder.prepare();
+    } catch (Exception e) {
+      throw new RuntimeException(e.getMessage());
+    }
+
+    InputStream is = null;
+
+    if (sPipeApi == PIPE_API_PFD) {
+      is = new ParcelFileDescriptor.AutoCloseInputStream(mParcelRead);
+    } else  {
+      is = mReceiver.getInputStream();
+    }
+
+    // This will skip the MPEG4 header if this step fails we can't stream anything :(
+    try {
+      byte buffer[] = new byte[4];
+      // Skip all atoms preceding mdat atom
+      while (!Thread.interrupted()) {
+        while (is.read() != 'm');
+        is.read(buffer,0,3);
+        if (buffer[0] == 'd' && buffer[1] == 'a' && buffer[2] == 't') break;
+      }
+    } catch (IOException e) {
+      Log.e(TAG,"Couldn't skip mp4 header :/");
+      stop();
+      throw e;
+    }
+
+    mVideoSurface = mMediaRecorder.getSurface();
+    mMediaRecorder.start();
+
+    int flags      = DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
+    mVirtualDisplay = MEDIA_PROJECTION.createVirtualDisplay("ScreenCaster", mQuality.screenWidth, mQuality.screenHeight, mQuality.screenDpi, flags, mVideoSurface, /* callback= */ null, /* handler= */ null);
+
+    // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
+    mPacketizer.setInputStream(is);
+    mPacketizer.start();
   }
 
   /**
@@ -150,11 +220,11 @@ public abstract class VideoStream extends MediaStream {
 
     mMediaCodec.configure(mediaFormat, /* surface= */ null, /* crypto= */ null, MediaCodec.CONFIGURE_FLAG_ENCODE);
 
-    inputSurface = mMediaCodec.createInputSurface();
+    mVideoSurface = mMediaCodec.createInputSurface();
     mMediaCodec.start();
 
     int flags      = DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
-    virtualDisplay = MEDIA_PROJECTION.createVirtualDisplay("ScreenCaster", mQuality.screenWidth, mQuality.screenHeight, mQuality.screenDpi, flags, inputSurface, /* callback= */ null, /* handler= */ null);
+    mVirtualDisplay = MEDIA_PROJECTION.createVirtualDisplay("ScreenCaster", mQuality.screenWidth, mQuality.screenHeight, mQuality.screenDpi, flags, mVideoSurface, /* callback= */ null, /* handler= */ null);
 
     // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
     mPacketizer.setInputStream(new MediaCodecInputStream(mMediaCodec));

@@ -24,6 +24,8 @@ import net.majorkernelpanic.screening.Session;
 import net.majorkernelpanic.screening.SessionBuilder;
 import net.majorkernelpanic.screening.rtp.H263Packetizer;
 
+import android.media.MediaRecorder;
+
 import java.io.IOException;
 
 /**
@@ -41,7 +43,13 @@ public class H263Stream extends VideoStream {
    */
   public H263Stream() {
     super();
-    mPacketizer = new H263Packetizer();
+    mVideoEncoder = MediaRecorder.VideoEncoder.H263;
+    mPacketizer   = new H263Packetizer();
+  }
+
+  public synchronized void configure() throws IllegalStateException, IOException {
+    super.configure();
+    mMode = MODE_MEDIARECORDER_API;
   }
 
   /**
