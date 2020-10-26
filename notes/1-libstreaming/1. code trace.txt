@@ -1,0 +1,348 @@
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\rtsp\RtspServer.java
+
+class:
+  public class RtspServer extends Service
+
+code:
+  import net.majorkernelpanic.streaming.Session;
+
+  protected Session handleRequest(String uri, Socket client)
+    Session session = UriParser.parse(uri);
+    session.setOrigin(client.getLocalAddress().getHostAddress());
+    session.setDestination(client.getInetAddress().getHostAddress());
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\rtsp\UriParser.java
+
+class:
+  public class UriParser
+
+code:
+  import net.majorkernelpanic.streaming.Session;
+  import net.majorkernelpanic.streaming.SessionBuilder;
+  import net.majorkernelpanic.streaming.video.VideoQuality;
+
+  public static Session parse(String uri) {
+    // excerpt..
+    SessionBuilder builder = SessionBuilder.getInstance().clone();
+
+    if (paramName.equalsIgnoreCase("h264")) {
+      VideoQuality quality = VideoQuality.parseQuality(paramValue);
+      builder
+        .setVideoQuality(quality)
+        .setVideoEncoder(VIDEO_H264);
+    }
+
+    Session session = builder.build();
+    return session;
+  }
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\SessionBuilder.java
+
+class:
+  public class SessionBuilder
+
+code:
+  import net.majorkernelpanic.streaming.video.H264Stream;
+
+  private int mVideoEncoder          = VIDEO_H263;
+  private int mCameraId              = CameraInfo.CAMERA_FACING_BACK;
+  private VideoQuality mVideoQuality = VideoQuality.DEFAULT_VIDEO_QUALITY;
+  private SurfaceView mSurfaceView   = null;
+
+  public SessionBuilder setVideoEncoder(int encoder)
+    mVideoEncoder = encoder;
+
+  public SessionBuilder setCamera(int camera)
+    mCameraId = camera;
+
+  public SessionBuilder setVideoQuality(VideoQuality quality)
+    mVideoQuality = quality.clone();
+
+  public SessionBuilder setSurfaceView(SurfaceView surfaceView)
+    mSurfaceView = surfaceView;
+
+  public Session build() {
+    // excerpt..
+    session = new Session();
+
+    switch (mVideoEncoder) {
+      case VIDEO_H264:
+        H264Stream stream = new H264Stream(mCameraId);
+        session.addVideoTrack(stream);
+        break;
+    }
+
+    if (session.getVideoTrack()!=null) {
+      VideoStream video = session.getVideoTrack();
+      video.setFlashState(mFlash);
+      video.setVideoQuality(mVideoQuality);
+      video.setSurfaceView(mSurfaceView);
+      video.setPreviewOrientation(mOrientation);
+      video.setDestinationPorts(5006);
+    }
+
+    return session;
+  }
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\Session.java
+
+class:
+  public class Session
+
+code:
+  import net.majorkernelpanic.streaming.gl.SurfaceView;
+  import net.majorkernelpanic.streaming.video.VideoStream;
+  import android.hardware.Camera.CameraInfo;
+
+  void addVideoTrack(VideoStream track)
+    mVideoStream = track;
+
+  public VideoStream getVideoTrack()
+    return mVideoStream;
+
+  public void setSurfaceView(final SurfaceView view)
+    mVideoStream.setSurfaceView(view);
+
+  public int getCamera()
+    return mVideoStream != null ? mVideoStream.getCamera() : 0;
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\MediaStream.java
+
+class:
+  public abstract class MediaStream implements Stream
+
+code:
+  import net.majorkernelpanic.streaming.rtp.AbstractPacketizer;
+
+  protected MediaCodec mMediaCodec = null;
+  protected AbstractPacketizer mPacketizer = null;
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\video\VideoStream.java
+
+class:
+  public abstract class VideoStream extends MediaStream
+
+code:
+  import net.majorkernelpanic.streaming.gl.SurfaceView;
+  import net.majorkernelpanic.streaming.rtp.MediaCodecInputStream;
+
+  import android.hardware.Camera;
+  import android.hardware.Camera.CameraInfo;
+
+  import android.media.MediaCodec;
+  import android.media.MediaCodecInfo;
+  import android.media.MediaFormat;
+  import android.media.MediaRecorder;
+
+  import android.view.Surface;
+  import android.view.SurfaceHolder;
+
+  protected SurfaceView mSurfaceView = null;
+  protected Camera mCamera = null;
+  protected int mVideoEncoder, mCameraId = 0;
+
+  public VideoStream(int camera)
+    super();
+    setCamera(camera);
+
+  public void setCamera(int camera)
+    mCameraId = camera;
+
+  public synchronized void setSurfaceView(SurfaceView view)
+    mSurfaceView = view;
+
+  public int getCamera()
+    return mCameraId;
+
+  protected void encodeWithMediaCodec()
+    // excerpt..
+    if (mMode == MODE_MEDIACODEC_API_2)
+      // Uses the method MediaCodec.createInputSurface to feed the encoder
+      encodeWithMediaCodecMethod2();
+
+  protected void encodeWithMediaCodecMethod2() {
+    // Updates the parameters of the camera if needed
+    createCamera();
+    updateCamera();
+
+    // Estimates the frame rate of the camera
+    measureFramerate();
+
+    EncoderDebugger debugger = EncoderDebugger.debug(mSettings, mQuality.resX, mQuality.resY);
+
+    mMediaCodec = MediaCodec.createByCodecName(debugger.getEncoderName());
+    MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", mQuality.resX, mQuality.resY);
+    mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, mQuality.bitrate);
+    mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, mQuality.framerate);
+    mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+    mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
+    mMediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+    Surface surface = mMediaCodec.createInputSurface();
+    ((SurfaceView)mSurfaceView).addMediaCodecSurface(surface);
+    mMediaCodec.start();
+
+    // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
+    mPacketizer.setInputStream(new MediaCodecInputStream(mMediaCodec));
+    mPacketizer.start();
+
+    mStreaming = true;
+  }
+
+  protected synchronized void createCamera() {
+    // excerpt..
+    if (mSurfaceView == null)
+      throw new InvalidSurfaceException("Invalid surface !");
+
+    if (mCamera == null) {
+      openCamera();
+
+      if (mMode == MODE_MEDIACODEC_API_2) {
+        mSurfaceView.startGLThread();
+        mCamera.setPreviewTexture(mSurfaceView.getSurfaceTexture());
+    }
+  }
+
+  private void openCamera()
+    mCamera = Camera.open(mCameraId);
+
+  protected synchronized void updateCamera() {
+    // stop
+    mPreviewStarted = false;
+    mCamera.stopPreview();
+
+    // update config values
+    Parameters parameters = mCamera.getParameters();
+    parameters.setPreviewFormat(mCameraImageFormat);
+    parameters.setPreviewSize(mQuality.resX, mQuality.resY);
+    parameters.setPreviewFpsRange(max[0], max[1]);
+
+    // start camera preview
+    mCamera.setParameters(parameters);
+    mCamera.setDisplayOrientation(mOrientation);
+    mCamera.startPreview();
+  }
+
+  public synchronized void stop()
+    // excerpt..
+    if (mMode == MODE_MEDIACODEC_API_2)
+      ((SurfaceView)mSurfaceView).removeMediaCodecSurface();
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\video\H264Stream.java
+
+class:
+  public class H264Stream extends VideoStream
+
+code:
+  import net.majorkernelpanic.streaming.mp4.MP4Config;
+  import net.majorkernelpanic.streaming.rtp.H264Packetizer;
+
+  public H264Stream(int camera) {
+    super(camera);
+    mMimeType = "video/avc";
+    mCameraImageFormat = ImageFormat.NV21;
+    mVideoEncoder = MediaRecorder.VideoEncoder.H264;
+    mPacketizer = new H264Packetizer();
+  }
+
+  public synchronized void configure()
+    super.configure();
+    mMode    = mRequestedMode;  //MODE_MEDIACODEC_API_2
+    mQuality = mRequestedQuality.clone();
+    mConfig  = testH264();
+
+  private MP4Config testH264()
+    if (mMode == MODE_MEDIACODEC_API_2)
+      return testMediaCodecAPI();
+
+  private MP4Config testMediaCodecAPI() {
+    createCamera();
+    updateCamera();
+
+    EncoderDebugger debugger = EncoderDebugger.debug(mSettings, mQuality.resX, mQuality.resY);
+    return new MP4Config(debugger.getB64SPS(), debugger.getB64PPS());
+  }
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\rtp\AbstractPacketizer.java
+
+class:
+  abstract public class AbstractPacketizer
+
+code:
+  protected RtpSocket socket = null;
+  protected InputStream is = null;
+  protected byte[] buffer;
+
+  public AbstractPacketizer()
+    socket = new RtpSocket();
+
+  public void setInputStream(InputStream is)
+    this.is = is;
+
+  public void setDestination(InetAddress dest, int rtpPort, int rtcpPort)
+    socket.setDestination(dest, rtpPort, rtcpPort);
+
+  protected void send(int length)
+    socket.commitBuffer(length);
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\rtp\H264Packetizer.java
+
+class:
+  public class H264Packetizer extends AbstractPacketizer implements Runnable
+
+code:
+  private Thread t = null;
+  private int streamType = 1;
+
+  public void start()
+    t = new Thread(this);
+    t.start();
+
+  public void stop()
+    is.close();
+    t.interrupt();
+
+  public void run()
+    if (is instanceof MediaCodecInputStream)
+      streamType = 1;
+      socket.setCacheSize(0);
+
+  private int fill(byte[] buffer, int offset,int length)
+    while (sum<length)
+      len = is.read(buffer, offset+sum, length-sum);
+      sum+=len;
+    return sum;
+
+  private void send()
+    // very complicated, but calls fill() for both headers and video data
+    buffer = socket.requestBuffer();
+    len = fill(buffer, rtphl+1,  naluLength-1);
+    super.send(naluLength+rtphl);
+
+--------------------------------------------------------------------------------

@@ -1,0 +1,3 @@
+<resources>
+  <integer name="NOTIFICATION_ID_NETWORKING_SERVICE">1</integer>
+</resources>

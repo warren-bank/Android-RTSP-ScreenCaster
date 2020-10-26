@@ -1,0 +1,50 @@
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\video\VideoStream.java
+
+no-longer needed:
+  import android.hardware.Camera;
+  import android.hardware.Camera.CameraInfo;
+
+  protected SurfaceView mSurfaceView = null;
+  protected Camera mCamera = null;
+  protected int mCameraId = 0;
+
+notes:
+  - this class should be entirely replaced
+    * remove logic regarding the camera, and the surfaceview on which to display the camera preview
+    * add logic to record the screen, and stream its encoded video
+      - encodeWithMediaCodecMethod2()
+        * most of the MediaFormat and mMediaCodec logic can be replaced by:
+            https://github.com/magicsih/AndroidScreenCaster/blob/v0.1/app/src/main/java/com/github/magicsih/androidscreencaster/service/ScreenCastService.java#L153
+        * the important part to retain is at the end:
+            // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
+            mPacketizer.setInputStream(new MediaCodecInputStream(mMediaCodec));
+            mPacketizer.start();
+        * best of both worlds..
+
+--------------------------------------------------------------------------------
+
+file:
+  majorkernelpanic\streaming\video\H264Stream.java
+  majorkernelpanic\streaming\Session.java
+  majorkernelpanic\streaming\SessionBuilder.java
+
+notes:
+  - these classes only need minor housekeeping to remove any lingering remnants of camera/surfaceview
+
+--------------------------------------------------------------------------------
+
+other things that are no-longer needed:
+  - majorkernelpanic\streaming\rtsp\UriParser.java
+    * libstreaming accepts querystring parameters in rtsp:// URLs
+      - https://github.com/fyhertz/spydroid-ipcamera/wiki/Advanced-Use-of-Spydroid
+      - this functionality isn't needed, so the URL parser can be removed
+      - every request can be initialized with a new Session having dynamically determined values
+        * width/height are determined by screen resolution
+        * video format is hardcoded to h.264 ("video/avc")
+        * bitrate and framerate can be hardcoded (for now),
+          maybe read from Preferences later
+
+--------------------------------------------------------------------------------

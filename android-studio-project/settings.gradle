@@ -1,0 +1,5 @@
+include ':libscreening'
+
+include ':RTSP-ScreenCaster'
+
+project(':RTSP-ScreenCaster').projectDir = new File(rootDir, 'libscreening-examples/RTSP-ScreenCaster')
