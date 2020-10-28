@@ -100,6 +100,7 @@ public class VideoQuality {
       quality.bitrate   = Integer.parseInt(config[1]);
     }
     catch (IndexOutOfBoundsException ignore) {}
+    catch (NumberFormatException     ignore) {}
 
     return quality;
   }
