@@ -100,7 +100,6 @@ public class AACStream extends AudioStream {
     } else {
       Log.d(TAG,"AAC supported on this phone");
     }
-
   }
 
   private static boolean AACStreamingSupported() {
@@ -131,7 +130,6 @@ public class AACStream extends AudioStream {
 
   public synchronized void configure() throws IllegalStateException, IOException {
     super.configure();
-    mQuality = mRequestedQuality.clone();
 
     // Checks if the user has supplied an exotic sampling rate
     int i=0;

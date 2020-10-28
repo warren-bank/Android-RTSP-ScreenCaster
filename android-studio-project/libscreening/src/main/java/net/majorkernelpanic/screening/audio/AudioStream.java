@@ -68,9 +68,13 @@ public abstract class AudioStream  extends MediaStream {
     mOutputFormat = outputFormat;
   }
 
+  public synchronized void configure() throws IllegalStateException, IOException {
+    super.configure();
+    mQuality = mRequestedQuality.clone();
+  }
+
   @Override
   protected void encodeWithMediaRecorder() throws IOException {
-
     // We need a local socket to forward data output by the microphone to the packetizer
     createSockets();
 
@@ -116,7 +120,5 @@ public abstract class AudioStream  extends MediaStream {
     // the mPacketizer encapsulates this stream in an RTP stream and send it over the network
     mPacketizer.setInputStream(is);
     mPacketizer.start();
-
   }
-
 }

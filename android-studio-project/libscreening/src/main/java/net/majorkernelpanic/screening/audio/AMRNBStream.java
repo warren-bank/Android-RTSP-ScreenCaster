@@ -54,7 +54,6 @@ public class AMRNBStream extends AudioStream {
     }
 
     setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
   }
 
   /**
@@ -70,7 +69,6 @@ public class AMRNBStream extends AudioStream {
   public synchronized void configure() throws IllegalStateException, IOException {
     super.configure();
     mMode = MODE_MEDIARECORDER_API;
-    mQuality = mRequestedQuality.clone();
   }
 
   /**
@@ -78,7 +76,7 @@ public class AMRNBStream extends AudioStream {
    */
   public String getSessionDescription() {
     return "m=audio "+String.valueOf(getDestinationPorts()[0])+" RTP/AVP 96\r\n" +
-        "a=rtpmap:96 AMR/8000\r\n" +
+        "a=rtpmap:96 AMR/"+mQuality.samplingRate+"\r\n" +
         "a=fmtp:96 octet-align=1;\r\n";
   }
 
