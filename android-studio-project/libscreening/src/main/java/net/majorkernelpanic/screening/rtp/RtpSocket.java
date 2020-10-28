@@ -90,7 +90,6 @@ public class RtpSocket implements Runnable {
     resetFifo();
 
     for (int i=0; i<mBufferCount; i++) {
-
       mBuffers[i] = new byte[MTU];
       mPackets[i] = new DatagramPacket(mBuffers[i], 1);
 
@@ -109,11 +108,10 @@ public class RtpSocket implements Runnable {
       /* Byte 2,3        ->  Sequence Number         */
       /* Byte 4,5,6,7    ->  Timestamp               */
       /* Byte 8,9,10,11  ->  Sync Source Identifier  */
-
     }
 
     try {
-    mSocket = new MulticastSocket();
+      mSocket = new MulticastSocket();
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }

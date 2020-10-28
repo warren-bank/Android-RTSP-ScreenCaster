@@ -161,6 +161,12 @@ public abstract class VideoStream extends MediaStream {
       throw new RuntimeException(e.getMessage());
     }
 
+    mVideoSurface = mMediaRecorder.getSurface();
+    mMediaRecorder.start();
+
+    int flags       = DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
+    mVirtualDisplay = MEDIA_PROJECTION.createVirtualDisplay("ScreenCaster", mQuality.screenWidth, mQuality.screenHeight, mQuality.screenDpi, flags, mVideoSurface, /* callback= */ null, /* handler= */ null);
+
     InputStream is = null;
 
     if (sPipeApi == PIPE_API_PFD) {
@@ -183,12 +189,6 @@ public abstract class VideoStream extends MediaStream {
       stop();
       throw e;
     }
-
-    mVideoSurface = mMediaRecorder.getSurface();
-    mMediaRecorder.start();
-
-    int flags      = DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
-    mVirtualDisplay = MEDIA_PROJECTION.createVirtualDisplay("ScreenCaster", mQuality.screenWidth, mQuality.screenHeight, mQuality.screenDpi, flags, mVideoSurface, /* callback= */ null, /* handler= */ null);
 
     // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
     mPacketizer.setInputStream(is);
