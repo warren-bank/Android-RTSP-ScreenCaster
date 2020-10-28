@@ -320,6 +320,9 @@ public class Session {
       Stream stream = id==0 ? mAudioStream : mVideoStream;
       if (stream!=null && !stream.isStreaming()) {
         try {
+          InetAddress destination =  InetAddress.getByName(mDestination);
+          stream.setTimeToLive(mTimeToLive);
+          stream.setDestinationAddress(destination);
           stream.configure();
         } catch (IOException e) {
           postError(ERROR_OTHER, id, e);
@@ -356,9 +359,6 @@ public class Session {
     Stream stream = id==0 ? mAudioStream : mVideoStream;
     if (stream!=null && !stream.isStreaming()) {
       try {
-        InetAddress destination =  InetAddress.getByName(mDestination);
-        stream.setTimeToLive(mTimeToLive);
-        stream.setDestinationAddress(destination);
         stream.start();
         if (getTrack(1-id) == null || getTrack(1-id).isStreaming()) {
           postSessionStarted();
