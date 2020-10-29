@@ -117,7 +117,7 @@ public final class DrawTask extends EglTask {
   private final Runnable mDrawTask = new Runnable() {
     @Override
     public void run() {
-      if (DEBUG) Log.v(TAG, "draw");
+    //if (DEBUG) Log.v(TAG, "draw");
       boolean local_request_draw;
       synchronized (mSync) {
         local_request_draw = requestDraw;
@@ -150,7 +150,7 @@ public final class DrawTask extends EglTask {
       } else {
         releaseSelf();
       }
-      if (DEBUG) Log.v(TAG, "draw:finished");
+    //if (DEBUG) Log.v(TAG, "draw:finished");
     }
   };
 
@@ -202,9 +202,10 @@ public final class DrawTask extends EglTask {
   @Override
   protected void onStop() {
     mIsRecording = false;
+    requestDraw  = false;
 
     if (display != null) {
-      if (DEBUG) Log.v(TAG, "release VirtualDisplay");
+      if (DEBUG) Log.d(TAG, "release VirtualDisplay");
       display.release();
     }
     if (mEncoderSurface != null) {
@@ -224,7 +225,7 @@ public final class DrawTask extends EglTask {
       mDrawer = null;
     }
     makeCurrent();
-    if (DEBUG) Log.v(TAG, "onStop");
+    if (DEBUG) Log.d(TAG, "onStop");
   }
 
   @Override
@@ -236,5 +237,13 @@ public final class DrawTask extends EglTask {
   @Override
   protected Object processRequest(final int request, final int arg1, final int arg2, final Object obj) {
     return null;
+  }
+
+  @Override
+  public void release() {
+    mIsRecording = false;
+    requestDraw  = false;
+
+    super.release(true);
   }
 }

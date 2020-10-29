@@ -112,6 +112,8 @@ public abstract class VideoStream extends MediaStream {
   /** Stops the stream. */
   public synchronized void stop() {
     if (mScreenCaptureTask != null) {
+      mScreenCaptureTask.release();
+      mScreenCaptureTask = null;
     }
     if (mVideoSurface != null) {
       mVideoSurface.release();
