@@ -51,13 +51,14 @@ public abstract class VideoStream extends MediaStream {
     MEDIA_PROJECTION = mp;
   }
 
-  protected VideoQuality      mRequestedQuality  = null;
-  protected VideoQuality      mQuality           = null;
-  protected SharedPreferences mSettings          = null;
-  protected int               mVideoEncoder      = 0;
+  protected VideoQuality      mRequestedQuality    = null;
+  protected VideoQuality      mQuality             = null;
+  protected SharedPreferences mSettings            = null;
+  protected int               mVideoEncoder        = 0;
 
-  private Surface             mVideoSurface      = null;
-  private DrawTask            mScreenCaptureTask = null;
+  private Surface             mVideoSurface        = null;
+  private DrawTask            mScreenCaptureTask   = null;
+  private Thread              mScreenCaptureThread = null;
 
   public VideoStream() {
     super();
@@ -111,6 +112,10 @@ public abstract class VideoStream extends MediaStream {
 
   /** Stops the stream. */
   public synchronized void stop() {
+    if (mScreenCaptureThread != null) {
+      mScreenCaptureThread.interrupt();
+      mScreenCaptureThread = null;
+    }
     if (mScreenCaptureTask != null) {
       mScreenCaptureTask.release();
       mScreenCaptureTask = null;
@@ -162,8 +167,9 @@ public abstract class VideoStream extends MediaStream {
     mVideoSurface = mMediaRecorder.getSurface();
     mMediaRecorder.start();
 
-    mScreenCaptureTask = new DrawTask(/* sharedContext= */ null, /* flags= */ 0, MEDIA_PROJECTION, mVideoSurface, mQuality);
-    new Thread(mScreenCaptureTask, "ScreenCaptureThread").start();
+    mScreenCaptureTask   = new DrawTask(/* sharedContext= */ null, /* flags= */ 0, MEDIA_PROJECTION, mVideoSurface, mQuality);
+    mScreenCaptureThread = new Thread(mScreenCaptureTask, "ScreenCaptureThread");
+    mScreenCaptureThread.start();
 
     InputStream is = null;
 
@@ -221,8 +227,9 @@ public abstract class VideoStream extends MediaStream {
     mVideoSurface = mMediaCodec.createInputSurface();
     mMediaCodec.start();
 
-    mScreenCaptureTask = new DrawTask(/* sharedContext= */ null, /* flags= */ 0, MEDIA_PROJECTION, mVideoSurface, mQuality);
-    new Thread(mScreenCaptureTask, "ScreenCaptureThread").start();
+    mScreenCaptureTask   = new DrawTask(/* sharedContext= */ null, /* flags= */ 0, MEDIA_PROJECTION, mVideoSurface, mQuality);
+    mScreenCaptureThread = new Thread(mScreenCaptureTask, "ScreenCaptureThread");
+    mScreenCaptureThread.start();
 
     // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
     mPacketizer.setInputStream(new MediaCodecInputStream(mMediaCodec));

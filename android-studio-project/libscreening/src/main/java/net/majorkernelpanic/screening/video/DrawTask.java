@@ -27,6 +27,12 @@
  * =======
  *  https://github.com/saki4510t/ScreenRecordingSample
  *  https://github.com/saki4510t/ScreenRecordingSample/blob/9419559a193f2b90c8f86de82c975494a7b2f7d0/app/src/main/java/com/serenegiant/media/MediaScreenEncoder.java#L112
+ *
+ * =============
+ * Dependencies:
+ * =============
+ *  https://github.com/saki4510t/libcommon/blob/master/common/src/main/java/com/serenegiant/glutils/EglTask.java
+ *  https://github.com/saki4510t/libcommon/blob/master/common/src/main/java/com/serenegiant/utils/MessageTask.java
 */
 
 package net.majorkernelpanic.screening.video;
@@ -175,6 +181,7 @@ public final class DrawTask extends EglTask {
   @Override
   protected void onStart() {
     if (DEBUG) Log.d(TAG, "onStart");
+
     mDrawer = new GLDrawer2D(true);
     mTexId = mDrawer.initTex();
     mSourceTexture = new SurfaceTexture(mTexId);
@@ -199,14 +206,14 @@ public final class DrawTask extends EglTask {
     queueEvent(mDrawTask);
   }
 
-  @Override
-  protected void onStop() {
+  private void releaseAllResources() {
     mIsRecording = false;
     requestDraw  = false;
 
     if (display != null) {
       if (DEBUG) Log.d(TAG, "release VirtualDisplay");
       display.release();
+      display = null;
     }
     if (mEncoderSurface != null) {
       mEncoderSurface.release();
@@ -224,13 +231,28 @@ public final class DrawTask extends EglTask {
       mDrawer.release();
       mDrawer = null;
     }
+
     makeCurrent();
+  }
+
+  @Override
+  protected void onStop() {
     if (DEBUG) Log.d(TAG, "onStop");
+    releaseAllResources();
+  }
+
+  @Override
+  protected void onRelease() {
+    super.onRelease();
+    if (DEBUG) Log.d(TAG, "onRelease");
+    releaseAllResources();
   }
 
   @Override
   protected boolean onError(final Exception e) {
+    super.onError(e);
     if (DEBUG) Log.w(TAG, e);
+
     return false;
   }
 
@@ -241,8 +263,7 @@ public final class DrawTask extends EglTask {
 
   @Override
   public void release() {
-    mIsRecording = false;
-    requestDraw  = false;
+    releaseAllResources();
 
     super.release(true);
   }
