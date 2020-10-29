@@ -26,8 +26,6 @@ import net.majorkernelpanic.screening.hw.EncoderDebugger;
 import net.majorkernelpanic.screening.rtp.MediaCodecInputStream;
 
 import android.content.SharedPreferences;
-import android.hardware.display.DisplayManager;
-import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
@@ -53,13 +51,13 @@ public abstract class VideoStream extends MediaStream {
     MEDIA_PROJECTION = mp;
   }
 
-  protected VideoQuality      mRequestedQuality = null;
-  protected VideoQuality      mQuality          = null;
-  protected SharedPreferences mSettings         = null;
-  protected int               mVideoEncoder     = 0;
+  protected VideoQuality      mRequestedQuality  = null;
+  protected VideoQuality      mQuality           = null;
+  protected SharedPreferences mSettings          = null;
+  protected int               mVideoEncoder      = 0;
 
-  private Surface             mVideoSurface     = null;
-  private VirtualDisplay      mVirtualDisplay   = null;
+  private Surface             mVideoSurface      = null;
+  private DrawTask            mScreenCaptureTask = null;
 
   public VideoStream() {
     super();
@@ -113,9 +111,7 @@ public abstract class VideoStream extends MediaStream {
 
   /** Stops the stream. */
   public synchronized void stop() {
-    if (mVirtualDisplay != null) {
-      mVirtualDisplay.release();
-      mVirtualDisplay = null;
+    if (mScreenCaptureTask != null) {
     }
     if (mVideoSurface != null) {
       mVideoSurface.release();
@@ -141,9 +137,9 @@ public abstract class VideoStream extends MediaStream {
       mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
       mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
       mMediaRecorder.setVideoEncoder(mVideoEncoder);
-      mMediaRecorder.setVideoSize(mRequestedQuality.screenWidth, mRequestedQuality.screenHeight);
-      mMediaRecorder.setVideoFrameRate(mRequestedQuality.framerate);
-      mMediaRecorder.setVideoEncodingBitRate((int)(mRequestedQuality.bitrate*0.8));
+      mMediaRecorder.setVideoSize(mQuality.screenWidth, mQuality.screenHeight);
+      mMediaRecorder.setVideoFrameRate(mQuality.framerate);
+      mMediaRecorder.setVideoEncodingBitRate((int)(mQuality.bitrate*0.8));
 
       // We write the output of the camera in a local socket instead of a file !
       // This one little trick makes streaming feasible quiet simply: data from the camera
@@ -164,8 +160,8 @@ public abstract class VideoStream extends MediaStream {
     mVideoSurface = mMediaRecorder.getSurface();
     mMediaRecorder.start();
 
-    int flags       = DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
-    mVirtualDisplay = MEDIA_PROJECTION.createVirtualDisplay("ScreenCaster", mQuality.screenWidth, mQuality.screenHeight, mQuality.screenDpi, flags, mVideoSurface, /* callback= */ null, /* handler= */ null);
+    mScreenCaptureTask = new DrawTask(/* sharedContext= */ null, /* flags= */ 0, MEDIA_PROJECTION, mVideoSurface, mQuality);
+    new Thread(mScreenCaptureTask, "ScreenCaptureThread").start();
 
     InputStream is = null;
 
@@ -223,8 +219,8 @@ public abstract class VideoStream extends MediaStream {
     mVideoSurface = mMediaCodec.createInputSurface();
     mMediaCodec.start();
 
-    int flags      = DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
-    mVirtualDisplay = MEDIA_PROJECTION.createVirtualDisplay("ScreenCaster", mQuality.screenWidth, mQuality.screenHeight, mQuality.screenDpi, flags, mVideoSurface, /* callback= */ null, /* handler= */ null);
+    mScreenCaptureTask = new DrawTask(/* sharedContext= */ null, /* flags= */ 0, MEDIA_PROJECTION, mVideoSurface, mQuality);
+    new Thread(mScreenCaptureTask, "ScreenCaptureThread").start();
 
     // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
     mPacketizer.setInputStream(new MediaCodecInputStream(mMediaCodec));

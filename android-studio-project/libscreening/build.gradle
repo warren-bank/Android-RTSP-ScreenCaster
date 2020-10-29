@@ -22,4 +22,5 @@ android {
 }
 
 dependencies {
+  implementation  'com.serenegiant:common:'  + project.ext.libGlUtils    // (787 KB) https://mvnrepository.com/artifact/com.serenegiant/common?repo=jcenter
 }

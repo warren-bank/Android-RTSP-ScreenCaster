@@ -28,7 +28,15 @@ Android app that serves an RTSP video stream to mirror the device's display scre
     * [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.txt) prior
   - the `libscreening` library is forked from:
     * commit [f620117](https://github.com/fyhertz/libstreaming/tree/f6201177b4669bb9fe50dac9632510a8ad75ad7b) on Mar 13, 2017, 9:34 AM PDT
-    * GPL-3.0 license
+    * GPL-3.0 [license](https://github.com/fyhertz/libstreaming/blob/f6201177b4669bb9fe50dac9632510a8ad75ad7b/LICENSE)
+* [ScreenRecordingSample](https://github.com/saki4510t/ScreenRecordingSample)
+  - author/copyright:
+    * [saki](https://github.com/saki4510t)
+  - license:
+    * [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+  - the [`DrawTask` class](https://github.com/warren-bank/Android-RTSP-ScreenCaster/blob/v01.01.00/android-studio-project/libscreening/src/main/java/net/majorkernelpanic/screening/video/DrawTask.java) in `libscreening` is forked from:
+    * commit [9419559](https://github.com/saki4510t/ScreenRecordingSample/tree/9419559a193f2b90c8f86de82c975494a7b2f7d0) on Jun 28, 2020, 6:13 AM PDT
+    * Apache-2.0 [license](https://github.com/saki4510t/ScreenRecordingSample/blob/9419559a193f2b90c8f86de82c975494a7b2f7d0/LICENSE)
 
 #### Legal:
 
