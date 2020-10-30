@@ -232,7 +232,10 @@ public final class DrawTask extends EglTask {
       mDrawer = null;
     }
 
-    makeCurrent();
+    try {
+      makeCurrent();
+    }
+    catch (final Exception e) {}
   }
 
   @Override
