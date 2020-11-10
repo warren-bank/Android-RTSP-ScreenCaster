@@ -1,0 +1,11 @@
+{
+  "name": "@warren-bank/Android-RTSP-ScreenCaster",
+  "private": true,
+  "license": "GPL-2.0",
+  "devDependencies": {
+    "@warren-bank/translate-android-strings": "^1.7.3"
+  },
+  "scripts": {
+    "translate": "node_modules/.bin/translate-android-strings -i \"en\" -f \"android-studio-project/libscreening-examples/RTSP-ScreenCaster/src/main/res/values/strings.xml\" -d \"android-studio-project/libscreening-examples/RTSP-ScreenCaster/src/main/res\" -m --na --nc --nw -b \"RTSP ScreenCaster\""
+  }
+}

@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: служба запуску</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster запущено на:</string>
+  <string name="notification_service_content_line3">Клацніть, щоб зупинити службу.</string>
+  <string name="options_video_framerate_label">Частота кадрів відео</string>
+  <string name="options_video_bitrate_label">Бітова швидкість відео</string>
+  <string name="options_audio_samplerate_label">Частота дискретизації звуку</string>
+  <string name="options_audio_bitrate_label">Бітова швидкість звуку</string>
+</resources>

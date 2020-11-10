@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: service wordt uitgevoerd</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster uitvoeren op:</string>
+  <string name="notification_service_content_line3">Klik om de service te stoppen.</string>
+  <string name="options_video_framerate_label">Snelheid video-frame</string>
+  <string name="options_video_bitrate_label">Videobitsnelheid</string>
+  <string name="options_audio_samplerate_label">Geluidsbemonsteringsfrequentie</string>
+  <string name="options_audio_bitrate_label">Audio-bitsnelheid</string>
+</resources>

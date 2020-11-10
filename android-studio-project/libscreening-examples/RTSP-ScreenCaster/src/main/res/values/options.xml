@@ -1,0 +1,94 @@
+<resources>
+  <!-- Preferences -->
+
+  <string-array translatable="false" name="options_video_framerate_keys">
+    <item>20 fps</item>
+    <item>30 fps</item>
+    <item>45 fps</item>
+    <item>60 fps</item>
+  </string-array>
+
+  <integer-array translatable="false" name="options_video_framerate_values">
+    <item>20</item>
+    <item>30</item>
+    <item>45</item>
+    <item>60</item>
+  </integer-array>
+
+  <string-array translatable="false" name="options_video_bitrate_keys">
+    <item>0.5 Mbps</item>
+    <item>1.0 Mbps</item>
+    <item>2.0 Mbps</item>
+    <item>4.0 Mbps</item>
+    <item>6.0 Mbps</item>
+  </string-array>
+
+  <integer-array translatable="false" name="options_video_bitrate_values">
+    <item>524288</item>
+    <item>1048576</item>
+    <item>2097152</item>
+    <item>4194304</item>
+    <item>6291456</item>
+  </integer-array>
+
+  <string-array translatable="false" name="options_audio_samplerate_keys">
+    <item>4 kHz</item>
+    <item>8 kHz</item>
+    <item>16 kHz</item>
+    <item>32 kHz</item>
+    <item>44.1 kHz</item>
+    <item>48 kHz</item>
+  </string-array>
+
+  <integer-array translatable="false" name="options_audio_samplerate_values">
+    <item>4000</item>
+    <item>8000</item>
+    <item>16000</item>
+    <item>32000</item>
+    <item>44100</item>
+    <item>48000</item>
+  </integer-array>
+
+  <string-array translatable="false" name="options_audio_bitrate_keys">
+    <item>8 kbps</item>
+    <item>16 kbps</item>
+    <item>24 kbps</item>
+    <item>32 kbps</item>
+    <item>40 kbps</item>
+    <item>48 kbps</item>
+    <item>56 kbps</item>
+    <item>64 kbps</item>
+    <item>80 kbps</item>
+    <item>96 kbps</item>
+    <item>112 kbps</item>
+    <item>128 kbps</item>
+    <item>144 kbps</item>
+    <item>160 kbps</item>
+    <item>192 kbps</item>
+    <item>224 kbps</item>
+    <item>256 kbps</item>
+    <item>320 kbps</item>
+  </string-array>
+
+  <integer-array translatable="false" name="options_audio_bitrate_values">
+    <item>8000</item>
+    <item>16000</item>
+    <item>24000</item>
+    <item>32000</item>
+    <item>40000</item>
+    <item>48000</item>
+    <item>56000</item>
+    <item>64000</item>
+    <item>80000</item>
+    <item>96000</item>
+    <item>112000</item>
+    <item>128000</item>
+    <item>144000</item>
+    <item>160000</item>
+    <item>192000</item>
+    <item>224000</item>
+    <item>256000</item>
+    <item>320000</item>
+  </integer-array>
+
+</resources>

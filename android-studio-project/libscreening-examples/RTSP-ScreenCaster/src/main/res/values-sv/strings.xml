@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: service som körs</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster körs på:</string>
+  <string name="notification_service_content_line3">Klicka för att stoppa tjänsten.</string>
+  <string name="options_video_framerate_label">Videoramper</string>
+  <string name="options_video_bitrate_label">Bifthasti</string>
+  <string name="options_audio_samplerate_label">Ljudsamplingskat</string>
+  <string name="options_audio_bitrate_label">Ljudbithastigheten</string>
+</resources>

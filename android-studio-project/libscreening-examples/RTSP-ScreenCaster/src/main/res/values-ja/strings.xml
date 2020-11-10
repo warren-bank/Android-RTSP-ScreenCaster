@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: サービス実行中</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster 実行:</string>
+  <string name="notification_service_content_line3">クリックしてサービスを停止.</string>
+  <string name="options_video_framerate_label">ビデオ・フレーム率</string>
+  <string name="options_video_bitrate_label">ビデオビットレート</string>
+  <string name="options_audio_samplerate_label">オーディオ・サンプリング・レート</string>
+  <string name="options_audio_bitrate_label">オーディオビットレート</string>
+</resources>

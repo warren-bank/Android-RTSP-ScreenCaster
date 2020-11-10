@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: serviceprogram</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster kører på:</string>
+  <string name="notification_service_content_line3">Klik for at stoppe serviceprogrammet.</string>
+  <string name="options_video_framerate_label">Videorammesats</string>
+  <string name="options_video_bitrate_label">Videobitrat</string>
+  <string name="options_audio_samplerate_label">Audio-stikprøvehastighed</string>
+  <string name="options_audio_bitrate_label">Audiobitrat</string>
+</resources>

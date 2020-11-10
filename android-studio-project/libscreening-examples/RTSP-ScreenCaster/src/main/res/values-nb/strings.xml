@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: tjenestekjøring</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster kjøre på:</string>
+  <string name="notification_service_content_line3">Klikk for å stoppe tjeneste.</string>
+  <string name="options_video_framerate_label">Rentesats for</string>
+  <string name="options_video_bitrate_label">Video Bitrate</string>
+  <string name="options_audio_samplerate_label">Lyd Sampling-rate</string>
+  <string name="options_audio_bitrate_label">Lyd Bitrate</string>
+</resources>

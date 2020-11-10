@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: הרצת שירות</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster רץ ב:</string>
+  <string name="notification_service_content_line3">לחצו כדי להפסיק את השירות.</string>
+  <string name="options_video_framerate_label">תעריף מסגרת וידיאו</string>
+  <string name="options_video_bitrate_label">Bitתעריף וידאו</string>
+  <string name="options_audio_samplerate_label">שיעור דגימת אודיו</string>
+  <string name="options_audio_bitrate_label">קצב אודיו</string>
+</resources>

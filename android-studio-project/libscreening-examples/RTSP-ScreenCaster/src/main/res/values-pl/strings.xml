@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: uruchamianie usługi</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster uruchamianie w:</string>
+  <string name="notification_service_content_line3">Kliknij, aby zatrzymać usługę.</string>
+  <string name="options_video_framerate_label">Szybkość transmisji wideo</string>
+  <string name="options_video_bitrate_label">Bitrate wideo</string>
+  <string name="options_audio_samplerate_label">Częstotliwość próbkowania dźwięku</string>
+  <string name="options_audio_bitrate_label">Szybkość transmisji audio</string>
+</resources>

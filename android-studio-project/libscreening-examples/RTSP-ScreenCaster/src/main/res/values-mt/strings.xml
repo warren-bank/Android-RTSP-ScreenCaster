@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: servizz jaħdem</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster taħdem f \':</string>
+  <string name="notification_service_content_line3">Ikklikkja biex tieqaf servizz.</string>
+  <string name="options_video_framerate_label">Rata ta \' Qafas</string>
+  <string name="options_video_bitrate_label">Birata tal-vidjow</string>
+  <string name="options_audio_samplerate_label">Rata Tal-awdjo Tal-kampjunar</string>
+  <string name="options_audio_bitrate_label">Birata tal-awdjo</string>
+</resources>

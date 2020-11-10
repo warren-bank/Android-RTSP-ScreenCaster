@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: služba spuštěna</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster spuštění v:</string>
+  <string name="notification_service_content_line3">Klepnutím zastavíte službu.</string>
+  <string name="options_video_framerate_label">Rychlost video rámců</string>
+  <string name="options_video_bitrate_label">Datový tok videa</string>
+  <string name="options_audio_samplerate_label">Rychlost vzorkování zvuku</string>
+  <string name="options_audio_bitrate_label">Datový tok zvuku</string>
+</resources>

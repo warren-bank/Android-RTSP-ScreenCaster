@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: جاري تشغيل الخدمة</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster تشغيل في:</string>
+  <string name="notification_service_content_line3">اضغط لايقاف الخدمة.</string>
+  <string name="options_video_framerate_label">معدل اطار الفيديو</string>
+  <string name="options_video_bitrate_label">فيديو Bitrate</string>
+  <string name="options_audio_samplerate_label">معدل التقارن الصوتي</string>
+  <string name="options_audio_bitrate_label">صورة نقطية</string>
+</resources>

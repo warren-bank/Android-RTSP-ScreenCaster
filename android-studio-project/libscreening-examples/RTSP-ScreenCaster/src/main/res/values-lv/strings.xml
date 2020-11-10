@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: dienesta gaitas</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster , kas:</string>
+  <string name="notification_service_content_line3">Klikšķināt, lai apturētu pakalpojumu.</string>
+  <string name="options_video_framerate_label">Video kadru ātrums</string>
+  <string name="options_video_bitrate_label">Video Bitrate</string>
+  <string name="options_audio_samplerate_label">Audioparaugu ņemšanas ātrums</string>
+  <string name="options_audio_bitrate_label">Audio Bitrate</string>
+</resources>

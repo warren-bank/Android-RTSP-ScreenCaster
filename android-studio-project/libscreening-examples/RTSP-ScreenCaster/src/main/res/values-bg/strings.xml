@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: поддръжка на</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster бягане в:</string>
+  <string name="notification_service_content_line3">Щракнете, за да спрете услугата.</string>
+  <string name="options_video_framerate_label">Ставка на кадрата:</string>
+  <string name="options_video_bitrate_label">Видео битрейт</string>
+  <string name="options_audio_samplerate_label">Аудио честота на вземане на проби</string>
+  <string name="options_audio_bitrate_label">Аудио битрейт</string>
+</resources>

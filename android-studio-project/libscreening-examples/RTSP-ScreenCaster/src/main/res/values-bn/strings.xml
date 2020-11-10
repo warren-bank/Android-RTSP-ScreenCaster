@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: সার্ভিস চলছে</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster চলমান:</string>
+  <string name="notification_service_content_line3">সার্ভিস বন্ধ করতে ক্লিক করুন.</string>
+  <string name="options_video_framerate_label">ভিডিও ফ্রেম রেট</string>
+  <string name="options_video_bitrate_label">ভিডিও বিটরেট</string>
+  <string name="options_audio_samplerate_label">অডিও স্যামলিং রেট</string>
+  <string name="options_audio_bitrate_label">অডিও বিটরেট</string>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: eksploatuos</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster Veikia:</string>
+  <string name="notification_service_content_line3">Spragtelkite norėdami sustabdyti paslaugą.</string>
+  <string name="options_video_framerate_label">Vaizdo kadrų dažnis</string>
+  <string name="options_video_bitrate_label">Vaizdo bitų dažnis</string>
+  <string name="options_audio_samplerate_label">Garso Ėminių Ėmimo Dažnis</string>
+  <string name="options_audio_bitrate_label">Garso bitų dažnis</string>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: සේවාව ක්රියාත්මක කරන්න</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster ක්රියාත්මක කරන්න:</string>
+  <string name="notification_service_content_line3">සේවාව නවත්වන්න ක්ලික් කරන්න.</string>
+  <string name="options_video_framerate_label">වීඩියෝ ෆ්රේම් අගය</string>
+  <string name="options_video_bitrate_label">වීඩියෝ බිට් රේට්</string>
+  <string name="options_audio_samplerate_label">ශ්රව්ය සමාප්ති අගය</string>
+  <string name="options_audio_bitrate_label">ශ්රව්ය Bitrate</string>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: chạy dịch vụ</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster đang chạy:</string>
+  <string name="notification_service_content_line3">Nhấp để dừng dịch vụ.</string>
+  <string name="options_video_framerate_label">Tốc độ khung ảnh</string>
+  <string name="options_video_bitrate_label">Video Bitrate</string>
+  <string name="options_audio_samplerate_label">Tỷ lệ lấy mẫu âm thanh</string>
+  <string name="options_audio_bitrate_label">Thông tin âm thanh</string>
+</resources>

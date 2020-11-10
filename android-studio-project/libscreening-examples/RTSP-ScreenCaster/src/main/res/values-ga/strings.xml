@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: seirbhís á rith</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster á rith ag:</string>
+  <string name="notification_service_content_line3">Cliceáil chun seirbhís a stopadh.</string>
+  <string name="options_video_framerate_label">Ráta Fráma Físe</string>
+  <string name="options_video_bitrate_label">Ráta Giotán Giotán</string>
+  <string name="options_audio_samplerate_label">Ráta Samplála Fuaime</string>
+  <string name="options_audio_bitrate_label">Ráta Giotán Fuaime</string>
+</resources>

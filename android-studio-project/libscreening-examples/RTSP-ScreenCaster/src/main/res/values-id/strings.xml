@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: Layanan berjalan</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster berjalan di:</string>
+  <string name="notification_service_content_line3">Klik untuk menghentikan layanan.</string>
+  <string name="options_video_framerate_label">Laju Bingkai Video</string>
+  <string name="options_video_bitrate_label">Bitrate Video</string>
+  <string name="options_audio_samplerate_label">Laju Sampling Audio</string>
+  <string name="options_audio_bitrate_label">Bitrate Audio</string>
+</resources>

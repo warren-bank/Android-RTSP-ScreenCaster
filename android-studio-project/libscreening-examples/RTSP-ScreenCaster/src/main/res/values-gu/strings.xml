@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: સેવા ચાલી રહ્યુ છે</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster ચાલી રહ્યુ છે:</string>
+  <string name="notification_service_content_line3">સેવા બંધ કરવા માટે ક્લિક કરો.</string>
+  <string name="options_video_framerate_label">વીડિયો ચોકઠાં દર</string>
+  <string name="options_video_bitrate_label">વીડિયો બીટદર</string>
+  <string name="options_audio_samplerate_label">ઓડિયો સામ્પ્લીંગ દર</string>
+  <string name="options_audio_bitrate_label">ઓડિયો બીટદર</string>
+</resources>

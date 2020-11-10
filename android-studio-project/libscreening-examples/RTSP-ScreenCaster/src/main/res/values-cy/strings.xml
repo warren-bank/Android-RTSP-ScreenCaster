@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: rhedeg gwasanaeth</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster rhedeg ar:</string>
+  <string name="notification_service_content_line3">Cliciwch i atal y gwasanaeth.</string>
+  <string name="options_video_framerate_label">Cyfradd Ffrâm Fideo</string>
+  <string name="options_video_bitrate_label">Comment</string>
+  <string name="options_audio_samplerate_label">Graddfa Samplu Sain</string>
+  <string name="options_audio_bitrate_label">Name</string>
+</resources>

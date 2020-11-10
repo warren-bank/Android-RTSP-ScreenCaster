@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: Szolgáltatás fut</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster Futás közben:</string>
+  <string name="notification_service_content_line3">Kattintson ide a szolgáltatás leállításához.</string>
+  <string name="options_video_framerate_label">Videó keret aránya</string>
+  <string name="options_video_bitrate_label">Videó bitmutató</string>
+  <string name="options_audio_samplerate_label">Audio mintavételezési arány</string>
+  <string name="options_audio_bitrate_label">Audio Bitrate</string>
+</resources>

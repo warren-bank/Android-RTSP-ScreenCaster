@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: izvajanje storitve</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster izvajanje na:</string>
+  <string name="notification_service_content_line3">Kliknite, da zaustavite storitev.</string>
+  <string name="options_video_framerate_label">Hitrost Slikatega Okvirja</string>
+  <string name="options_video_bitrate_label">Bitna slika videa</string>
+  <string name="options_audio_samplerate_label">Stopnja Avdio Vzorčenja</string>
+  <string name="options_audio_bitrate_label">Zvočna bitna hitrost</string>
+</resources>

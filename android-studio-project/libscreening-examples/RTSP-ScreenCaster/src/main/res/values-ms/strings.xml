@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: perkhidmatan berjalan</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster berjalan pada:</string>
+  <string name="notification_service_content_line3">Klik untuk henti perkhidmatan.</string>
+  <string name="options_video_framerate_label">Kadar Bingkai Video</string>
+  <string name="options_video_bitrate_label">Kadar Bit Video</string>
+  <string name="options_audio_samplerate_label">Kadar Sampelan Audio</string>
+  <string name="options_audio_bitrate_label">Kadar Bit Audio</string>
+</resources>

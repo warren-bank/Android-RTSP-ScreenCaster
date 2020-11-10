@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: εκτέλεση υπηρεσίας.</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster εκτέλεση σε::</string>
+  <string name="notification_service_content_line3">Πατήστε για τερματισμό της υπηρεσίας..</string>
+  <string name="options_video_framerate_label">Ρυθμός πλαισίου βίντεο</string>
+  <string name="options_video_bitrate_label">Βίντεο bitrate</string>
+  <string name="options_audio_samplerate_label">Ρυθμός δειγματοληψίας ήχου</string>
+  <string name="options_audio_bitrate_label">Bitrate ήχου</string>
+</resources>

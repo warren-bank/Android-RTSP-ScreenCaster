@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: 服务运行</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster 奔跑:</string>
+  <string name="notification_service_content_line3">单击以停止服务.</string>
+  <string name="options_video_framerate_label">视频帧速率</string>
+  <string name="options_video_bitrate_label">视频比特率</string>
+  <string name="options_audio_samplerate_label">音频采样率</string>
+  <string name="options_audio_bitrate_label">音频比特率</string>
+</resources>

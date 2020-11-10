@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">RTSP ScreenCaster</string>
+  <string name="notification_service_ticker">RTSP ScreenCaster: 서비스 실행</string>
+  <string name="notification_service_content_line1">RTSP ScreenCaster 실행 중인:</string>
+  <string name="notification_service_content_line3">서비스를 중지하려면 누르십시오..</string>
+  <string name="options_video_framerate_label">비디오 프레임 속도</string>
+  <string name="options_video_bitrate_label">비디오 비트 전송률</string>
+  <string name="options_audio_samplerate_label">오디오 샘플링 레이트</string>
+  <string name="options_audio_bitrate_label">오디오 비트 전송률</string>
+</resources>
